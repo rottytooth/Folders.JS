@@ -1,0 +1,88 @@
+<!DOCTYPE html utf-8>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>Folders</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+</head>
+<body>
+    <div id="main">
+        <div id="controls">
+            <h1>Folders Emulator</h1>
+            <select name = "programLoad">
+                <option value = "HelloWorld" selected>Hello World</option>
+                <option value = "99Bottles">99 Bottles</option>
+                <option value = "Fibonacci">Fibonacci</option>
+                <option value = "Echo">Simple Echo</option>
+                <option value = "TruthMachine">Truth Machine</option>
+             </select>
+             <div class="button" id="load" onclick="LoadProgram();">Load</div>
+             <div class="button" id="open">Open...</div><br/>
+             <div class="button" id="stop">Stop</div>
+             <div class="button" id="run">Run</div>
+             <div class="button" id="step">Step</div>
+             Speed:
+             <select name = "speed">
+                <option value = "Fast" selected>Fast</option>
+                <option value = "Slow" selected>Slow</option>
+                <option value = "Slower" selected>Slower</option>
+             </select>
+
+             <div id="notes">
+                 In the JS version, folders are represented by []
+             </div>
+             <div id="credits">
+                 Created by <a href="http://danieltemkin.com">Daniel Temkin</a>, 2020<br/>
+                 Original C# implementation, 20?<br/>
+                 Python implementation by cxxx, 2020<br/>
+             </div>
+        </div>
+    </div>
+    <script type="text/javascript" src="src/windows-window.js"></script>
+    <script type="text/javascript" src="src/explorer-window.js"></script>
+    <!-- <script type="text/javascript" src="src/title-window.js"></script> -->
+    <script type="text/javascript" src="src/cmd-window.js"></script>
+    <script type="text/javascript">
+        var sourceWindow = createExplorer("sourceWindow", 0, 0, "Program Source");
+        var dataWindow = createExplorer("dataWindow", 1, 0, "Temp Data");
+        var cmdWindow = createCmdWindow("cmdWindow", 1, 1, "Command Prompt");
+        
+        // var controls = createTitleWindow("controls", 0, 1);
+
+        sourceWindow.draw(0);
+        dataWindow.draw(0);
+        cmdWindow.draw(0);
+
+        function redraw() {
+            main = document.getElementById("main");
+            main.style.height = window.innerHeight + "px";
+            main.style.width = window.innerWidth + "px";
+
+            // redraw controls
+            var controls = document.getElementById("controls");
+            controls.style.width = window.innerWidth / 2 + "px"; 
+            controls.style.height = window.innerHeight / 2 + "px";
+            controls.style.left = window.innerWidth / 2 + "px";
+
+            sourceWindow.redraw();
+            dataWindow.redraw();
+            cmdWindow.redraw();
+        }
+
+        window.onresize = redraw; // redraw when window is resized
+        redraw(); // kick off first drawing
+
+        sourceWindow.getProgram("programs/test.json");
+
+        cmdWindow.printHeading();
+
+        // this is the big folder
+        // var biggerFolder = document.createElement("img");
+        // biggerFolder.src = "icons/folder_lg_empty.png";
+        // biggerFolder.classList.add("bigFolder");
+        // myWindow0.contentPane.appendChild(biggerFolder);
+</script>
+</body>
+</html>

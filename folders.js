@@ -1,3 +1,8 @@
+/*
+ * FOLDERS.JS
+ * Interpreter for the Folders language, using brackets in the place of folders
+ * Created 2019 Daniel Temkin danieltemkin.com
+ */
 
 var folders = {};
 folders.vars = {};
@@ -16,11 +21,11 @@ folders.interpret = function(text) {
     folders.runCommandList(arraylist);
 }
 
-folders.runCommandList = function(arraylist) {
+folders.runCommandList = (arraylist) => {
     arraylist.forEach(folders.runCommand);
 }
 
-folders.runCommand = function(command) {
+folders.runCommand = (command) => {
     if (command.length < 2) {
         throw "Not enough subdirectories to define command";
     }
@@ -72,7 +77,7 @@ folders.runCommand = function(command) {
     }
 }
 
-folders.parseExpr = function(expr) {
+folders.parseExpr = (expr) => {
     if (expr.length < 2) {
         throw "Not enough subdirectories to define expression";
     }
@@ -115,7 +120,7 @@ folders.parseExpr = function(expr) {
 }
 
 // FIXME: all of this is definitely wrong
-folders.getTypedValue = function(type, value) {
+folders.getTypedValue = (type, value) => {
     switch(type) {
         case 0: // int
             return parseInt(value);
@@ -144,7 +149,7 @@ folders.getTypedValue = function(type, value) {
 // |
 // ----|--- 1
 // Equals 0101, or 0x5 for the first entry
-folders.buildValue = function(numbr) {
+folders.buildValue = (numbr) => {
     var fullnum = numbr.map(function(hexdigit){
         return hexdigit.map(function(bit) {
             return bit.length;
