@@ -253,7 +253,7 @@ li.fldr.leftFolderName {
     font-family: 'Consolas';
     line-height: 200%;
 }
-#controls .button {
+#controls .button, #controls .file {
     display: inline-block;
     border: 1px solid #666;
     padding: 2px 15px 0px 15px;
@@ -263,7 +263,7 @@ li.fldr.leftFolderName {
     margin-bottom: 3px;
 }
 #controls .button:hover {
-    background-color: #cff;
+    background-color: #66CBEA;
 }
 #controls select {
     font-size: 110%;
@@ -271,6 +271,12 @@ li.fldr.leftFolderName {
     padding: 5px;
     width: 200px;
 }
-#controls #stop {
+#controls #stop, #controls #slidecontainer {
     display: none;
+}
+#open {
+    display: none !important;
+}
+#credits {
+    margin-top:20px;
 }

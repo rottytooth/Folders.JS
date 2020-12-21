@@ -5,7 +5,7 @@ function createCmdWindow(name, top, left, title) {
 
     var cmdWindow = new winwin(name, top, left);
 
-    cmdWindow.currentPath = "Program Source";
+    cmdWindow.currentPath = "FLDR";
 
     cmdWindow.draw = function(active) {
         this.redraw(active);
@@ -25,73 +25,61 @@ function createCmdWindow(name, top, left, title) {
         this.wininner.appendChild(this.textContent);
 
         this.userTypedContent = document.createElement("div");
+        this.userTypedContent.setAttribute("contenteditable", "true");
         this.userTypedContent.classList.add("cmd_content");
         this.wininner.appendChild(this.userTypedContent);
-
-        // following the text is the cursor, also inline
-        this.cursor = document.createElement("div");
-        this.cursor.classList.add("cursor");
-        this.wininner.appendChild(this.cursor);
-        this.cursor.style.display = 'none'; // hide
-
-        // make the cursor blink
-        var blink = document.createElement("div");
-        blink.classList.add("blink");
-        this.cursor.appendChild(blink);
     }
 
     cmdWindow.makeActive = () => {
-        cmdWindow.cursor.style.display = 'inline-block'; // show
-    }
-
-    cmdWindow.makeInactive = () => {
-        cmdWindow.cursor.style.display = 'none'; // hide
+        cmdWindow.userTypedContent.focus();
     }
 
     // activated by users typing new content
-    cmdWindow.userprint = function(content) {
-        if (content == "\u0008") {
-            var lineOfText = this.userTypedContent.innerText;
-            if (lineOfText[lineOfText.length - 1] != '>') {
-                this.userTypedContent.innerText = lineOfText.slice(0, -1);
-            }
-        }
-        else if (content == "\r" || content == "\n"){
-            var commandToProcess = this.userTypedContent.innerText;
+    cmdWindow.userprint = (content) => {
+        if (content == "\r" || content == "\n"){
+            var commandToProcess = cmdWindow.userTypedContent.innerText;
 
             // move that content into the "not current line" text
-            this.println(commandToProcess);
-            this.userTypedContent.innerText = "";
+            cmdWindow.println(commandToProcess, true);
+            cmdWindow.userTypedContent.innerText = "";
 
             // FIXME: this is where we actually process the command that's been entered
 
-            if (commandToProcess.toLowerCase().startsWith('folders ')) {
+            commandToProcess = commandToProcess.toLowerCase().trim();
+
+            if (commandToProcess.startsWith('load ')) {
                 // this is loading a program
-                var programToLoad = commandToProcess.toLowerCase().substring('folders '.length);
+                var programToLoad = commandToProcess.toUpperCase().substring('load '.length);
                 cmdWindow.loadProgram(programToLoad);
             }
-        }
-        else {
-            this.userTypedContent.innerText += content;
+            else if (commandToProcess == 'folders .') {
+                // run the interpreter on the currently loaded program
+                folders.interpret(sourceWindow.folders);
+            } 
+            else {
+                cmdWindow.println("Command not found");
+            }
+            cmdWindow.println("", false, false); // invoke next prompt
         }
 
         // scroll to bottom, to show newly added text
-        this.wininner.scrollTo(0, this.wininner.scrollHeight);
+        cmdWindow.wininner.scrollTo(0, cmdWindow.wininner.scrollHeight);
     }
 
-    cmdWindow.loadProgram = function(programName) {
-        cmdWindow.println("Loading program " + programName + "...", true);
-        fileName = programName.replace(/\s/g, '');
+    cmdWindow.loadProgram = (programName) => {
+        cmdWindow.println("Loading program " + programName + "...");
+        fileName = programName.toLowerCase().replace(/\s/g, '');
         sourceWindow.getProgram(programName, "programs/" + fileName + ".json");
-        cmdWindow.println("",false);
     }
 
     // this "system print," all print proceeding the command currently being entered
-    cmdWindow.println = function(content, suppressPrompt) {
-        this.textContent.appendChild(document.createTextNode(content));
-        this.textContent.appendChild(document.createElement("br"));
+    cmdWindow.println = (content, suppressPrompt = true, newline = true) => {
         if (!suppressPrompt) {
-            this.textContent.appendChild(document.createTextNode(this.currentPath + "> "));
+            cmdWindow.textContent.appendChild(document.createTextNode(cmdWindow.currentPath + "> "));
+        }
+        cmdWindow.textContent.appendChild(document.createTextNode(content));
+        if (newline) {
+            cmdWindow.textContent.appendChild(document.createElement("br"));
         }
     }
 
@@ -103,9 +91,11 @@ function createCmdWindow(name, top, left, title) {
         this.println("A Windows-based File System and Programming Language offering infinite data storage in finite space", true);
         this.println("", true);
         this.println("Type 'dir' to see list of pre-loaded programs", true);
-        this.println("Type 'folders [path]' to run folders on that path", true);
+        this.println("Type 'load [path]' to load a local folders program", true);
+        this.println("Type 'folders .' to run Folders on the current directory", true);
 
-        this.println("");
+        this.println("", true);
+        this.println("", false);
     }
 
     return cmdWindow;
@@ -116,12 +106,12 @@ function keyevents(e) {
     if (cmdWindow.active) {
         var code = e.keyCode || e.which;
         cmdWindow.userprint(String.fromCharCode(code));
-        e.preventDefault();
-        return false;
+        if (e.keyCode == 13)
+            e.preventDefault();
+        return true;
     }
 
     if (e.keyCode == 8) return false;
-
     return true;
 }
 

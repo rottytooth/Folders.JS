@@ -1,9 +1,15 @@
 
 # FOLDERS.JS
-and
+
+folders.js sits in the root directory. It works with node or in-browser, as a stand-alone Folders interpreter
+
+* input is a JSON file
+* folders are represented by []. [[]] is a folder containing another folder.
+* for details of Folders syntax, see http://danieltemkin.com/Esolangs/Folders
+
 # FOLDERS WEB-BASED EMULATOR
 
-The folders.js file in the root is a stand-alone interpreter for Folders, using brackets in the place of actual folders.
+A Windows-like emulator for FOLDERS
 
-In Progress
+_In Progress_
 

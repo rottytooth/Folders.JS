@@ -1,5 +1,5 @@
 /*
- * FOLDERS.JS
+ * FOLDERS.JS (Simple Version)
  * Interpreter for the Folders language, using brackets in the place of folders
  * Created 2019 Daniel Temkin danieltemkin.com
  */
@@ -10,9 +10,9 @@ folders.vars = {};
 const readline = require('readline').createInterface({
     input: process.stdin,
     output: process.stdout
-  });
+});
 
-folders.interpret = function(text) {
+folders.interpret = (text) => {
     arraylist = eval(text); // assumes json is clean, only has brackets
 
     // TODO: some tracing of where we are in the program, equivalent of line numbers
@@ -162,12 +162,13 @@ folders.buildValue = (numbr) => {
 }
 
 // NODE entry point
-if (process.argv.length < 3) {
-    console.log("no file passed");
-    process.exit(1);
-}
+// if (process.argv.length < 3) {
+//     console.log("no file passed");
+//     process.exit(1);
+// }
 var progt = require("fs");
-var filename = process.argv[2];
+// var filename = process.argv[2];
+filename = "programs/99bottles.json";
 progt.readFile(filename, 'utf8', function(err, text) {
     if (err) throw err;
     console.log("OK:" + filename);

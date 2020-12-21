@@ -58,6 +58,10 @@ function createExplorer(name, top, left, title) {
     explorer.fldrclick = (e) => {
 
         var caller = e.target || e.srcElement;
+        var cl = caller; // clear any selected from the rest of the list
+
+        var fldrwin = document.getElementById(explorer.name);
+        fldrwin.querySelectorAll("li").forEach(el => el.classList.remove("selected"));
         caller.classList.add("selected");
     }
 
@@ -114,7 +118,7 @@ function createExplorer(name, top, left, title) {
                 explorer.folders = JSON.parse(xhr.responseText);
                 explorer.drawFolders(explorer.folders, document.getElementById(explorer.name).querySelector('.navList'));
 //                explorer.title = "Program Source: " + name;
-                this.headerPane.innerText = "Program Source: " + name;
+                explorer.headerPane.innerText = "Program Source: " + name;
             } else {
                 var error = xhr.responseText;
                 console.log(error);
