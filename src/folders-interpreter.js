@@ -10,8 +10,6 @@ folders.vars = {};
 var depth = 0;
 var childnum = 0;
 
-var interval = 500;
-
 folders.commands = { IF: "if", WHILE: "while", DECLARE: "declare", LET: "let", PRINT: "print", INPUT: "input", BLOCK: "block" };
 
 folders.expressions = { VARIABLE: "variable", ADD: "add", SUBTRACT: "subtract", MULTIPLY: "multiply", DIVIDE: "divide", LITERAL: "literal", EQUALS: "equals", GREATER: "greater", LESS: "less" };

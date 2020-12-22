@@ -5,4 +5,6 @@ function LoadProgram() {
 
 function RunProgram() {
     folders.interpret(sourceWindow.folders);
+
+    folders.runtime.begin(folders.root);
 }

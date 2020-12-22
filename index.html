@@ -26,7 +26,7 @@
              <label class="button" for="open">Open...</label>
              <input type="file" class="button" id="open"/><br/>
              <div class="button" id="stop">Stop</div>
-             <div class="button" id="run">Run</div>
+             <div class="button" id="run" onclick="RunProgram();">Run</div>
              <div class="button" id="step">Step</div>
              <div class="slidecontainer">
                 <input type="range" min="0" max="4" value="2" class="slider" id="myRange" oninput="updaterange(this)">
@@ -50,6 +50,7 @@
     <script type="text/javascript" src="src/explorer-window.js"></script>
     <script type="text/javascript" src="src/cmd-window.js"></script>
     <script type="text/javascript" src="src/folders-interpreter.js"></script>
+    <script type="text/javascript" src="src/folders-runtime.js"></script>
     <script type="text/javascript" src="src/control-panel.js"></script>
     <script type="text/javascript">
         var sourceWindow = createExplorer("sourceWindow", 0, 0, "Program Source");

@@ -55,18 +55,57 @@ function createExplorer(name, top, left, title) {
     // it is essentially the current data for that window
     explorer.folders = [];
 
-    explorer.fldrclick = (e) => {
-
-        var caller = e.target || e.srcElement;
-        var cl = caller; // clear any selected from the rest of the list
-
+    /** 
+     * Mark the selected folder in blue and de-select all the others in that pane
+     */
+    explorer.selectFolder = (caller) => {
         var fldrwin = document.getElementById(explorer.name);
         fldrwin.querySelectorAll("li").forEach(el => el.classList.remove("selected"));
         caller.classList.add("selected");
     }
 
-    // based on the current data, redraw the folders
-    explorer.drawFolders = function(jlist, navList) {
+    explorer.fldrclick = (e) => {
+        var caller = e.target || e.srcElement;
+        explorer.selectFolder(caller);
+    }
+
+    explorer.drawNamedFolders = function(nodelist) {
+        var navList = document.getElementById(explorer.name).querySelector('.navList');
+
+        for (var i = 0; i < nodelist.length; i++) {
+            var name = nodelist[i].name;
+            var fldr = document.createElement("li");
+            fldr.classList.add("fldr");
+            if (nodelist[i].length > 0) {
+                fldr.classList.add("menu-open")
+            }
+            var liimg = document.createElement("img");
+            liimg.src = 'icons/folder_icon_small_halfsize.png';
+            fldr.appendChild(liimg);
+            fldr.appendChild(document.createTextNode(name));
+
+            fldr.addEventListener("click", explorer.fldrclick);
+
+            navList.appendChild(fldr);
+    
+            if (nodelist[i].length > 0) {
+                var newUl = document.createElement("ul");
+                newUl.classList.add("indent");
+                navList.appendChild(newUl);
+                explorer.drawFolders(nodelist[i], newUl, [...path].concat(i));
+            }
+        }
+    }
+
+    /**
+     * Based on the current data, redraw the folders
+     * 
+     * @param jlist    folder array of current level and descendents
+     * @param navList  current ul list to add li's to
+     * @param path     path of folders that got us to this point (put in id of folders)
+     */
+    explorer.drawFolders = function(jlist, navList, path) {
+        if (!path) path = [];
 
         for (var i = 0; i < jlist.length; i++) {
             var name = "New Folder";
@@ -74,6 +113,9 @@ function createExplorer(name, top, left, title) {
                 name += " (" + (i + 1) + ")";
             }
             var fldr = document.createElement("li");
+            var pathjoined = path.join("-");
+            if (pathjoined) pathjoined += "-";
+            fldr.id = pathjoined + i.toString();
             fldr.classList.add("fldr");
             if (jlist[i].length > 0) {
                 fldr.classList.add("menu-open")
@@ -91,7 +133,7 @@ function createExplorer(name, top, left, title) {
                 var newUl = document.createElement("ul");
                 newUl.classList.add("indent");
                 navList.appendChild(newUl);
-                explorer.drawFolders(jlist[i], newUl);
+                explorer.drawFolders(jlist[i], newUl, [...path].concat(i));
             }
 
             // right pane
@@ -117,7 +159,6 @@ function createExplorer(name, top, left, title) {
             if (xhr.status == 200) {
                 explorer.folders = JSON.parse(xhr.responseText);
                 explorer.drawFolders(explorer.folders, document.getElementById(explorer.name).querySelector('.navList'));
-//                explorer.title = "Program Source: " + name;
                 explorer.headerPane.innerText = "Program Source: " + name;
             } else {
                 var error = xhr.responseText;
@@ -129,7 +170,6 @@ function createExplorer(name, top, left, title) {
             }            
         }
         xhr.send();
-        
     }    
 
     return explorer;
