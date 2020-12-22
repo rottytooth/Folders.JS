@@ -271,8 +271,11 @@ li.fldr.leftFolderName {
     padding: 5px;
     width: 200px;
 }
-#controls #stop, #controls #slidecontainer {
+#controls #stop, #controls #reset {
     display: none;
+}
+#slidecontainer {
+    display: inline-block;
 }
 #open {
     display: none !important;

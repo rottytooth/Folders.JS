@@ -4,9 +4,32 @@ folders.runtime.interval = 500; // FIXME: connect to slider
 
 folders.runtime.fromChild = false;
 
-folders.runtime.callstack = [ { name: "Call Stack" }];
+folders.runtime.callstack = { name: "Call Stack", children: []};
+
+folders.runtime.varlist = [];
+
+folders.runtime.popcallstack = (node) => {
+    if (!node.children || node.children.length == 0) {
+        node = null;
+    }
+    else {
+        folders.runtime.popcallstack(node.children[0]);
+    }
+}
+
+folders.runtime.pushcallstack = (node, newnode) => {
+    if (!node.children || node.children.length == 0) {
+        node.chldren = [];
+        node.children.push(newnode);
+    }
+    else {
+        folders.runtime.pushcallstack(node.children[0], newnode);
+    }
+}
 
 folders.runtime.begin = (rootNode) => {
+    folders.runtime.varlist = []; // reset
+    folders.runtime.fromChild = false;
 
     folders.runtime.node = rootNode;
 
@@ -48,11 +71,21 @@ folders.runtime.processNode = () => {
         activeFolder.scrollIntoView();
         window.scrollTo(0,0);
 
-        folders.runtime.callstack.push({ name: node.commandtype});
+        folders.runtime.pushcallstack(folders.runtime.callstack,{ name: node.commandtype, children: []});
 
         switch(node.commandtype) {
+            // case folders.commands.IF:
+            // case folders.commands.WHILE:
+            case folders.commands.DECLARE:
+                if (node.varname in folders.runtime.varlist) {
+                    cmdWindow.println("ERROR: Varname already in use " + varname);
+                    clearInterval(folders.runtime.workInterval); // halt program
+                }
+                folders.runtime.varlist[node.varname] = null;
+                break;
             case folders.commands.PRINT:
                 cmdWindow.println(folders.runtime.resolveExpr(node.expression), false);
+            
         }
 
         // do test of if or while or whatever and if yes, call children
@@ -62,16 +95,16 @@ folders.runtime.processNode = () => {
             folders.runtime.fromChild = false;
         }
         else { // either hasn't children or has failed test
-            folders.runtime.callstack.pop();
+            folders.runtime.popcallstack(folders.runtime.callstack);
             folders.runtime.setNext();
         }
-        dataWindow.drawNamedFolders(folders.runtime.callstack);
+        dataWindow.drawNamedFolders([folders.runtime.callstack], null, true);
     }
 }
 
 folders.runtime.setNext = () => {
-    if (folders.runtime.node.sibling) {
-        folders.runtime.node = folders.runtime.node.sibling;
+    if (folders.runtime.node.nextsib) {
+        folders.runtime.node = folders.runtime.node.nextsib;
         folders.runtime.fromChild = false;
     }
     else if (folders.runtime.node.parent) {

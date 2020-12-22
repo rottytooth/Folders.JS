@@ -69,15 +69,19 @@ function createExplorer(name, top, left, title) {
         explorer.selectFolder(caller);
     }
 
-    explorer.drawNamedFolders = function(nodelist) {
-        var navList = document.getElementById(explorer.name).querySelector('.navList');
+    explorer.drawNamedFolders = function(nodelist, navList, clear) {
+        if (!navList)
+            navList = document.getElementById(explorer.name).querySelector('.navList');
+
+        if (clear)
+            navList.innerHTML = ''; // clear completely
 
         for (var i = 0; i < nodelist.length; i++) {
             var name = nodelist[i].name;
             var fldr = document.createElement("li");
             fldr.classList.add("fldr");
             if (nodelist[i].length > 0) {
-                fldr.classList.add("menu-open")
+                fldr.classList.add("menu-open");
             }
             var liimg = document.createElement("img");
             liimg.src = 'icons/folder_icon_small_halfsize.png';
@@ -87,12 +91,12 @@ function createExplorer(name, top, left, title) {
             fldr.addEventListener("click", explorer.fldrclick);
 
             navList.appendChild(fldr);
-    
-            if (nodelist[i].length > 0) {
+
+            if (nodelist[i].children && nodelist[i].children.length > 0) {
                 var newUl = document.createElement("ul");
                 newUl.classList.add("indent");
                 navList.appendChild(newUl);
-                explorer.drawFolders(nodelist[i], newUl, [...path].concat(i));
+                explorer.drawNamedFolders(nodelist[i].children, newUl);
             }
         }
     }

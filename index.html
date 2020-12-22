@@ -25,11 +25,12 @@
              <div class="button" id="load" onclick="LoadProgram();">Load</div>
              <label class="button" for="open">Open...</label>
              <input type="file" class="button" id="open"/><br/>
-             <div class="button" id="stop">Stop</div>
+             <div class="button" id="reset">Reset</div>
+             <div class="button" id="stop">Pause</div>
              <div class="button" id="run" onclick="RunProgram();">Run</div>
              <div class="button" id="step">Step</div>
-             <div class="slidecontainer">
-                <input type="range" min="0" max="4" value="2" class="slider" id="myRange" oninput="updaterange(this)">
+             <div id="slidecontainer">
+                <input type="range" min="0" max="4" value="2" class="slider" id="runSpeedRange" oninput="updaterange(this)">
             </div>
              <!-- Speed:
              <select name = "speed">
@@ -39,8 +40,8 @@
              </select> -->
              <div id="credits">
                  Created by <a href="http://danieltemkin.com">Daniel Temkin</a>, 2020<br/>
-                 Original C# implementation, 20?<br/>
-                 Python implementation by cxxx, 2020<br/><br/>
+                 <a href="https://github.com/rottytooth/Folders">Original C# implementation</a>, 2015<br/>
+                 <a href="https://github.com/SinaKhalili/Folders.py">Python implementation</a> by SinaKhalili, 2020<br/><br/>
                  <!-- NOTE: in this JS implementation, folders and their containment are represented by []s in a JSON file -->
 
                 </div>
